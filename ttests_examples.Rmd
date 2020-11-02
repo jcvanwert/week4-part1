@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
 ## 1. Confidence intervals 
@@ -60,3 +61,71 @@ df how far away from 0 (standardized t statistic from how far away means are; di
 p value tells me that if these samples are drawn from populations with the same mean horn length (null hypoth) then there is almost 48% chance that i couldve taken two ranodom samples from both pops and found samples at least as different as the samples i have here. 
 
 Not enough evidence to reject null hypothesis. 
+
+## End Part 1
+
+## Part 2: Two sample-test
+
+```{r}
+compact_suv <- mpg %>% 
+  filter(class %in% c("compact", "suv"))
+unique(compact_suv$class)
+```
+### Exploratory data visulization
+
+Exploratory histograms
+```{r}
+ggplot(data = compact_suv, aes(x=cty))+
+  geom_histogram(bins = 15)+
+  facet_wrap(~class)
+```
+
+Q-Q plot: plots actual values for obs versus theoretical values if perfectly drawn from normal distribution. the more linear, the more normally distributed your sample observations are. 
+
+
+### Quantile-quantile plot
+```{r}
+ggplot(data = compact_suv, aes(sample = cty))+
+  geom_qq()+
+  facet_wrap(~class)
+
+```
+
+Suv looks linear. compact has a few higher than expected gas milage values at high upper tail (some positive skew). 
+
+### Descriptive statistics
+
+```{r}
+car_stats <- compact_suv %>% 
+  group_by(class) %>% 
+  summarise( mean_city = mean(cty),
+          sd_city = sd(cty),
+          n= n())
+```
+
+### 2-sample t-test
+
+Create vectors containing observations for each sample (city gas mileage)
+
+Pull because it turns values into vector values. Select keeps values as dataframe. 
+```{r}
+compact_sample <- compact_suv %>% 
+  filter(class == "compact") %>% 
+  pull(cty)
+
+
+suv_sample <- compact_suv %>% 
+  filter(class == "suv") %>% 
+  pull(cty)
+
+
+t.test(x=compact_sample, y=suv_sample)
+
+```
+Mean of compact car cty mpg higher than suv. 
+95% confidence interval for two sample t test kind of weird.
+testing null hypothesis that difference in means is equal to zero- drawn from pops with same exact mean.
+
+the pvalue gives probability (close to zer0) percent chance that i couldve randomly drawn samples with means that are at least this different if they were actually drawn from population with same mean. 
+
+these samples were probably drawn from samples with different means. 
