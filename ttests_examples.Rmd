@@ -9,3 +9,54 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## 1. Confidence intervals 
+
+```{r}
+otter_length <- c(38, 41, 50, 27, 32, 41, 48, 60, 43)
+
+t.test(otter_length)
+```
+
+Looking at 95% CI from 34.7-49.8 inch. Means that in that percent of samples that we took from the pop, we would expect to find the population mean ithin the range for the CI presented. 
+
+If we took 100 samples, and found the CI for those samples, then from 95 samples we would expect to find the population mean. 
+
+The mean length of sea otters (N=9) is 42.22 inches. 95 CI is 34.7-49.8 inch.
+
+Default setting is that null hypothesis is mean value equal to zero. Testing null hypothesis that mean otter length = 0 inches. 
+
+## 2. T-test (1-sample t-test)
+
+Can specify the null hypothesis; "?t.test" to get documentation. Define Mu (mean) to change from default setting of mean=zero. 
+
+See a claim: mean otter lenght is 50 inches.
+
+```{r}
+otter_test <- t.test(x = otter_length, mu = 50)
+otter_test
+```
+
+pvalue 0.044, if the population mean really is 50 inches, there is a 4.4% chance that I could've randomly taken a sample from that pop that has a mean that is at least as diff from 50 as my sample mean is in either direction. 
+
+I do have sufficient evidence to reject the null hypothesis. 
+
+## Two-sample t-test
+
+Do not need the same sample size. 
+
+```{r}
+desert_bighorns <- c(32, 44, 18, 26, 50, 33, 42, 40)
+sierra_bighorns <- c(28, 31, 40, 42, 26, 29, 31)
+
+t.test(x = desert_bighorns, y = sierra_bighorns)
+
+```
+Expected confidence interval gives negative because of x and y order.
+
+Difference in means is equal to 0. 
+
+df how far away from 0 (standardized t statistic from how far away means are; different from null hypothesis)
+
+p value tells me that if these samples are drawn from populations with the same mean horn length (null hypoth) then there is almost 48% chance that i couldve taken two ranodom samples from both pops and found samples at least as different as the samples i have here. 
+
+Not enough evidence to reject null hypothesis. 
